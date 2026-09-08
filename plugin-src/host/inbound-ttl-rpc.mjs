@@ -1,5 +1,6 @@
 import { normalizeInboundTtlHours } from '../../src/channels/shared/inbound-ttl.mjs';
 import { getInboundTtlRuntime } from './inbound-ttl-runtime.mjs';
+import { installRpcChannel } from './rpc-mount.mjs';
 
 export const INBOUND_TTL_RPC_CHANNEL = '/dsh-im-settings';
 export const INBOUND_TTL_ENDPOINTS = Object.freeze({
@@ -75,7 +76,7 @@ export function installInboundTtlRpc(ctx, options = {}) {
   const runtime = options.runtime ?? getInboundTtlRuntime(ctx, options.config);
   const logger = typeof ctx?.logger === 'function'
     ? ctx.logger('dsh-im:inbound-ttl') : (ctx?.logger ?? null);
-  return ctx.connection.rpc.handle(
+  return installRpcChannel(ctx,
     INBOUND_TTL_RPC_CHANNEL,
     createInboundTtlRpcHandler({ ...runtime, logger }),
     { authority: 'loopback' },

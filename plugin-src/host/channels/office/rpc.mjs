@@ -1,4 +1,5 @@
 import { resolveRpcAuthority } from '../../rpc-authority.mjs';
+import { installRpcChannel } from '../../rpc-mount.mjs';
 import { OFFICE_RPC_CHANNEL, OFFICE_RPC_ENDPOINTS } from '../../../../src/channels/office/protocol.mjs';
 
 function record(value) { return value !== null && typeof value === 'object' && !Array.isArray(value); }
@@ -40,7 +41,7 @@ export function createOfficeRpcHandler(controller) {
 }
 
 export function installOfficeRpc(ctx, controller, authority) {
-  return ctx.connection.rpc.handle(
+  return installRpcChannel(ctx,
     OFFICE_RPC_CHANNEL,
     createOfficeRpcHandler(controller),
     { authority: resolveRpcAuthority(authority) },

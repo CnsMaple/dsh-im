@@ -11,6 +11,7 @@ import {
 } from '../../../../src/channels/shared/model-setting.mjs';
 import { normalizeAccessPolicy } from '../../../../src/channels/shared/access-policy.mjs';
 import { resolveRpcAuthority } from '../../rpc-authority.mjs';
+import { installRpcChannel } from '../../rpc-mount.mjs';
 import { publicWorkspaceError, validWorkspacePayload } from '../shared/workspace-rpc.mjs';
 import { validAgentPresetPayload } from '../shared/agent-preset-rpc.mjs';
 import { validModelPayload } from '../shared/model-setting-rpc.mjs';
@@ -778,7 +779,7 @@ export function installFeishuRpc(ctx, controller, options, authority) {
   if (!ctx?.connection?.rpc || typeof ctx.connection.rpc.handle !== 'function') {
     throw new TypeError('DSH Host Connection RPC is required');
   }
-  return ctx.connection.rpc.handle(
+  return installRpcChannel(ctx,
     FEISHU_RPC_CHANNEL,
     createFeishuRpcHandler(controller, options),
     { authority: resolveRpcAuthority(authority) },

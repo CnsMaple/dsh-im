@@ -6,6 +6,7 @@ import {
 import { SET_CONTEXT_ENHANCEMENT_ENDPOINT, validContextEnhancementPayload } from '../shared/context-enhancement-rpc.mjs';
 import { SET_ACCESS_POLICY_ENDPOINT, validAccessPolicyPayload } from '../shared/access-policy-rpc.mjs';
 import { resolveRpcAuthority } from '../../rpc-authority.mjs';
+import { installRpcChannel } from '../../rpc-mount.mjs';
 import { publicWorkspaceError, SET_WORKSPACE_ENDPOINT, validWorkspacePayload } from '../shared/workspace-rpc.mjs';
 import { SET_AGENT_PRESET_ENDPOINT, validAgentPresetPayload } from '../shared/agent-preset-rpc.mjs';
 import { SET_MODEL_ENDPOINT, validModelPayload } from '../shared/model-setting-rpc.mjs';
@@ -230,7 +231,7 @@ export function installQqRpc(ctx, controller, options, authority) {
   if (!ctx?.connection?.rpc || typeof ctx.connection.rpc.handle !== 'function') {
     throw new TypeError('DSH Host Connection RPC is required');
   }
-  return ctx.connection.rpc.handle(
+  return installRpcChannel(ctx,
     QQ_RPC_CHANNEL,
     createQqRpcHandler(controller, options),
     { authority: resolveRpcAuthority(authority) },

@@ -2,6 +2,7 @@ import QRCode from 'qrcode';
 import { SET_CONTEXT_ENHANCEMENT_ENDPOINT, validContextEnhancementPayload } from '../shared/context-enhancement-rpc.mjs';
 import { SET_ACCESS_POLICY_ENDPOINT, validAccessPolicyPayload } from '../shared/access-policy-rpc.mjs';
 import { resolveRpcAuthority } from '../../rpc-authority.mjs';
+import { installRpcChannel } from '../../rpc-mount.mjs';
 import {
   publicWorkspaceError,
   SET_WORKSPACE_ENDPOINT,
@@ -263,7 +264,7 @@ export function installWeixinRpc(ctx, controller, options, authority) {
   if (!ctx?.connection?.rpc || typeof ctx.connection.rpc.handle !== 'function') {
     throw new TypeError('DSH Host Connection RPC is required');
   }
-  return ctx.connection.rpc.handle(
+  return installRpcChannel(ctx,
     WEIXIN_RPC_CHANNEL,
     createWeixinRpcHandler(controller, options),
     { authority: resolveRpcAuthority(authority) },
